@@ -3,7 +3,7 @@ import { crearRegistro, obtenerRegistros, obtenerPorId, actualizarRegistro, elim
 
 
 const router = express.Router();
-router.post('create/', crearRegistro);
+router.post('/', crearRegistro);
 router.get('/', obtenerRegistros);
 router.get('search/:id', obtenerPorId);
 router.put('update/:id', actualizarRegistro);

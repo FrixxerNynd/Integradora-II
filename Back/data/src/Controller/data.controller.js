@@ -3,9 +3,25 @@ import Data from '../Models/data.model.js';
 // Crear un nuevo registro de sensor
 export const crearRegistro = async (req, res) => {
   try {
+    const {temperatura, humedad, iluminacion, movimiento } = req.body();
+    if (!temperatura || !humedad || !ilumiancion || !movimiento) {
+      return res.status(400).json({message: "Todos los campos son obligatorios"});
+    }
+
+    const newData = new Data ({
+      temperatura,
+      humedad,
+      iluminacion,
+      movimiento,
+      fecha: Date.now()
+    })
+    await newData.save();
+
+    res.status(201).json({ mensaje: 'Registro creado exitosamente', newData })
+    /*
     const nuevoDato = new Data(req.body);
     await nuevoDato.save();
-    res.status(201).json({ mensaje: 'Registro creado exitosamente', data: nuevoDato });
+    ;*/
   } catch (error) {
     res.status(400).json({ mensaje: 'Error al crear registro', error });
   }
