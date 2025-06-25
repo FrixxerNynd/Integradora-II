@@ -57,10 +57,21 @@ export const obtenerPorId = async (req, res) => {
 // Actualizar un registro
 export const actualizarRegistro = async (req, res) => {
   try {
-    const actualizado = await Data.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true
-    });
+
+    const { fecha, actualizacion } = req.params;
+    const date = new Date(fecha);
+    if (isNaN(date.getTime())){
+      res.status(400).json({message: "Fecha Invalida, verifica que siga el formato YYYY-MM-DD: ", date });
+    }
+    const actualizado = await Data.findOneAndUpdate(
+        date,
+        actualizacion,
+        {
+          new: true,
+          runValidators: true
+        }
+      );
+
     if (!actualizado) {
       return res.status(404).json({ mensaje: 'Registro no encontrado' });
     }
@@ -70,15 +81,21 @@ export const actualizarRegistro = async (req, res) => {
   }
 };
 
-// Eliminar un registro
-export const eliminarRegistro = async (req, res) => {
+// Eliminar automáticamente registros con más de 30 días
+export const eliminarRegistrosA = async (req, res) => {
   try {
-    const eliminado = await Data.findByIdAndDelete(req.params.id);
-    if (!eliminado) {
-      return res.status(404).json({ mensaje: 'Registro no encontrado' });
-    }
-    res.status(200).json({ mensaje: 'Registro eliminado exitosamente' });
+    const fechaLimite = new Date();
+    fechaLimite.setDate(fechaLimite.getDate() - 30); // Resta 30 días a la fecha actual
+
+    const resultado = await Data.deleteMany({
+      fecha: { $lt: fechaLimite }
+    });
+
+    res.status(200).json({
+      mensaje: 'Registros antiguos eliminados exitosamente',
+      eliminados: resultado.deletedCount
+    });
   } catch (error) {
-    res.status(500).json({ mensaje: 'Error al eliminar el registro', error });
+    res.status(500).json({ mensaje: 'Error al eliminar registros antiguos', error });
   }
 };

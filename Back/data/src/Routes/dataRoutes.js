@@ -1,5 +1,5 @@
 import express from 'express';
-import { crearRegistro, obtenerRegistros, obtenerPorId, actualizarRegistro, eliminarRegistro } from '../Controller/data.controller.js';
+import { crearRegistro, obtenerRegistros, obtenerPorId, actualizarRegistro, eliminarRegistrosA } from '../Controller/data.controller.js';
 
 
 const router = express.Router();
@@ -7,6 +7,6 @@ router.post('/', crearRegistro);
 router.get('/', obtenerRegistros);
 router.get('search/:id', obtenerPorId);
 router.put('update/:id', actualizarRegistro);
-router.delete('delete/:id', eliminarRegistro);
+router.delete('delete', eliminarRegistrosA);
 
 export default router;
