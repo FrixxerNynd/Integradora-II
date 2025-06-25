@@ -18,8 +18,7 @@ const dataSchema = new mongoose.Schema({
     required: true
   },
   fecha: {
-    type: Date,
-    default: Date.now
+    type: Date
   }
 });
 
