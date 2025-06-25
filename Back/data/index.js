@@ -1,10 +1,14 @@
 import app from './src/app.js';
-import dotenv from 'dotenv';
+import connectBD from './config/bd.js'
 
-dotenv.config();
 
-const PORT = process.env.PORT || 3001;
 
-app.listen(PORT, () => {
-  console.log(`Servicio en el puerto ${PORT}`);
+const PORT = 3001;
+
+
+connectBD().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Servicio en el puerto ${PORT}`);
+    console.log(`La ruta es: http://localhost:${PORT}`);
+  });
 });
