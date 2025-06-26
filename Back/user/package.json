@@ -4,17 +4,20 @@
   "description": "",
   "license": "ISC",
   "author": "Fernando Chavez",
-  "type": "commonjs",
+  "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "service": "nodemon index.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.2",
     "dayjs": "^1.11.13",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.17.0",
+    "mongoose": "^8.16.0",
     "morgan": "^1.10.0"
   }
 }

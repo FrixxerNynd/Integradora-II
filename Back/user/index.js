@@ -1,2 +1,11 @@
-// Archivo de conexion faltante, index de adorno
+import app from './src/app.js';
+import connectDB from './config/bd.js';
 
+const PORT = 3001;
+
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Servicio en el puerto ${PORT}`);
+    console.log(`La ruta es: http://localhost:${PORT}`);
+  });
+});
