@@ -3,31 +3,43 @@ import Data from '../Models/data.model.js';
 // Crear un nuevo registro de sensor
 export const crearRegistro = async (req, res) => {
   try {
-    //Verifica que los campos no vayan vacios
-    const {temperatura, humedad, iluminacion, movimiento } = req.body;
-    if (!temperatura || !humedad || !iluminacion || !movimiento) {
-      return res.status(400).json({message: "Todos los campos son obligatorios"});
+    const { temperatura, humedad, iluminacion, movimiento } = req.body;
+
+    // Verificación más robusta: permite 0 como valor válido
+    if (
+      temperatura === undefined ||
+      humedad === undefined ||
+      iluminacion === undefined ||
+      movimiento === undefined
+    ) {
+      return res.status(400).json({ mensaje: "Todos los campos son obligatorios" });
     }
-    //Construye el objeto newData
-    const newData = new Data ({
+
+    // Crear instancia con la fecha actual
+    const newData = new Data({
       temperatura,
       humedad,
       iluminacion,
       movimiento,
-      fecha: Date.now()
-    })
-    //Guarda en la BD y envia respuesta satisfactoria
+      fecha: new Date() // o Date.now()
+    });
+
     await newData.save();
-    res.status(201).json({ mensaje: 'Registro creado exitosamente', newData })
-    /*
-    const nuevoDato = new Data(req.body);
-    await nuevoDato.save();
-    ;*/
+
+    res.status(201).json({
+      mensaje: "Registro creado exitosamente",
+      registro: newData
+    });
+
   } catch (error) {
-    console.error("Error al ingresar la informacion", error )
-    res.status(400).json({ mensaje: 'Error al crear registro', error: error.message });
+    console.error("Error al ingresar la información", error);
+    res.status(500).json({
+      mensaje: "Error al crear registro",
+      error: error.message
+    });
   }
 };
+
 
 // Obtener todos los registros
 export const obtenerRegistros = async (req, res) => {
@@ -41,43 +53,58 @@ export const obtenerRegistros = async (req, res) => {
 };
 
 // Obtener un registro por ID
-export const obtenerPorId = async (req, res) => {
+export const obtenerPorRangoFechas = async (req, res) => {
   try {
-    //Localizar el dato mediante ID
-    const dato = await Data.findById(req.params.id);
-    if (!dato) {
-      return res.status(404).json({ mensaje: 'Registro no encontrado' });
+    const { inicio, fin } = req.body;
+
+    if (!inicio || !fin) {
+      return res.status(400).json({ mensaje: 'Debes proporcionar las fechas "inicio" y "fin".' });
     }
-    res.status(200).json(dato);
+
+    const fechaInicio = new Date(inicio);
+    const fechaFin = new Date(fin);
+
+    // Validar fechas válidas
+    if (isNaN(fechaInicio.getTime()) || isNaN(fechaFin.getTime())) {
+      return res.status(400).json({ mensaje: 'Las fechas proporcionadas no son válidas.' });
+    }
+
+    // Validar que el rango no exceda 7 días
+    const unaSemana = 7 * 24 * 60 * 60 * 1000; // 7 días en milisegundos
+    if (fechaFin - fechaInicio > unaSemana) {
+      return res.status(400).json({ mensaje: 'El rango de fechas no puede ser mayor a 7 días.' });
+    }
+
+    const datos = await Data.find({
+      fecha: {
+        $gte: fechaInicio,
+        $lte: fechaFin
+      }
+    });
+
+    res.status(200).json(datos);
   } catch (error) {
-    res.status(500).json({ mensaje: 'Error al buscar el registro', error });
+    res.status(500).json({ mensaje: 'Error al buscar registros por fechas', error });
   }
 };
 
-// Actualizar un registro
-export const actualizarRegistro = async (req, res) => {
+//Eliminar registros por fecha
+export const eliminarPorFecha = async (req, res) => {
   try {
-
-    const { fecha, actualizacion } = req.params;
-    const date = new Date(fecha);
-    if (isNaN(date.getTime())){
-      res.status(400).json({message: "Fecha Invalida, verifica que siga el formato YYYY-MM-DD: ", date });
+    const { fecha } = req.body;
+    const fechaLimite = new Date(fecha);
+    if (isNaN(fechaLimite.getTime())) {
+      return res.status(400).json({ mensaje: 'Fecha proporcionada no es válida.' });
     }
-    const actualizado = await Data.findOneAndUpdate(
-        date,
-        actualizacion,
-        {
-          new: true,
-          runValidators: true
-        }
-      );
-
-    if (!actualizado) {
-      return res.status(404).json({ mensaje: 'Registro no encontrado' });
-    }
-    res.status(200).json({ mensaje: 'Registro actualizado', data: actualizado });
+    const resultado = await Data.deleteOne({
+      fecha: { $lte: fechaLimite }
+    });
+    res.status(200).json({
+      mensaje: 'Registro eliminado',
+      eliminados: resultado.deletedCount
+    });
   } catch (error) {
-    res.status(400).json({ mensaje: 'Error al actualizar el registro', error });
+    res.status(500).json({ mensaje: 'Error al eliminar registros', error });
   }
 };
 
