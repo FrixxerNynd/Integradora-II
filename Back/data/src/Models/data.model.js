@@ -18,7 +18,8 @@ const dataSchema = new mongoose.Schema({
     required: true
   },
   fecha: {
-    type: Date
+    type: Date,
+    expires: '30d'
   }
 });
 

@@ -1,42 +1,58 @@
 import Data from '../Models/data.model.js';
+import { sendTemperatureAlert } from '../services/rabbitmq.service.js';
 
-// Crear un nuevo registro de sensor
-export const crearRegistro = async (req, res) => {
+
+export const InsertDataEsp = async (req, res) => {
   try {
-    const { temperatura, humedad, iluminacion, movimiento } = req.body;
-
-    // Verificación más robusta: permite 0 como valor válido
-    if (
-      temperatura === undefined ||
-      humedad === undefined ||
-      iluminacion === undefined ||
-      movimiento === undefined
-    ) {
-      return res.status(400).json({ mensaje: "Todos los campos son obligatorios" });
+    const datos = req.body;
+    const TEMPERATURE_THRESHOLD = 30;
+    // Verificar que sea un arreglo no vacío
+    if (!Array.isArray(datos) || datos.length === 0) {
+      return res.status(400).json({ mensaje: "Se esperaba un arreglo de registros." });
     }
 
-    // Crear instancia con la fecha actual
-    const newData = new Data({
-      temperatura,
-      humedad,
-      iluminacion,
-      movimiento,
-      fecha: new Date() // o Date.now()
-    });
+    // Validar cada objeto dentro del arreglo
+    const registrosValidados = datos.map((d, index) => {
+      const { temperatura, humedad, iluminacion, movimiento } = d;
 
-    await newData.save();
+      if (
+        temperatura === undefined ||
+        humedad === undefined ||
+        iluminacion === undefined ||
+        movimiento === undefined
+      ) {
+        throw new Error(`Faltan campos en el registro #${index + 1}`);
+      }
+
+      // Verificar si la temperatura supera el umbral
+      if (temperatura > TEMPERATURE_THRESHOLD) {
+        sendTemperatureAlert({
+          temperatura,
+          humedad,
+          iluminacion,
+          movimiento,
+          threshold: TEMPERATURE_THRESHOLD
+        }).catch(console.error);
+      }
+      return {
+        temperatura,
+        humedad,
+        iluminacion,
+        movimiento,
+        fecha: new Date()
+      };
+    });
+    // Insertar múltiples documentos
+    const registrosInsertados = await Data.insertMany(registrosValidados);
 
     res.status(201).json({
-      mensaje: "Registro creado exitosamente",
-      registro: newData
+      mensaje: "Registros creados exitosamente",
+      registros: registrosInsertados
     });
 
   } catch (error) {
-    console.error("Error al ingresar la información", error);
-    res.status(500).json({
-      mensaje: "Error al crear registro",
-      error: error.message
-    });
+    console.error("Error al crear registros:", error.message);
+    res.status(400).json({ mensaje: "Error al crear registros", error: error.message });
   }
 };
 
