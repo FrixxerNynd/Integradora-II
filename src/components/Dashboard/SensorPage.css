@@ -1,0 +1,953 @@
+.sensor-page {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.sensor-header {
+  margin-bottom: 2rem;
+}
+
+.sensor-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.sensor-header p {
+  color: var(--text-secondary);
+  font-size: 1.125rem;
+}
+
+.sensor-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  grid-template-areas:
+    "current chart"
+    "stats alerts";
+}
+
+.sensor-current {
+  grid-area: current;
+}
+
+.sensor-chart {
+  grid-area: chart;
+  min-height: 400px;
+}
+
+.sensor-circular {
+  grid-area: current;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 350px;
+}
+
+.sensor-stats {
+  grid-area: stats;
+}
+
+.sensor-alerts {
+  grid-area: alerts;
+}
+
+.sensor-stats h3,
+.sensor-alerts h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.stat-card {
+  background: var(--secondary-bg);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--accent-blue);
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.stat-time {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.alert-settings {
+  background: var(--secondary-bg);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+}
+
+.alert-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.alert-item:last-of-type {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.alert-item label {
+  flex: 1;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.alert-item input[type="number"] {
+  width: 80px;
+  padding: 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--primary-bg);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.alert-item span {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.alert-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.alert-toggle span {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.alert-toggle input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+}
+
+/* Humidity Page Header */
+.humidity-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  gap: 2rem;
+}
+
+.humidity-title-section {
+  flex: 1;
+}
+
+.humidity-title-section h1 {
+  margin: 0 0 0.5rem 0;
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.humidity-title-section p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.humidity-current-reading {
+  flex: 0 0 auto;
+}
+
+.humidity-current-card {
+  background: var(--secondary-bg);
+  border-radius: 16px;
+  padding: 1.5rem 2rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  min-width: 300px;
+  position: relative;
+}
+
+.humidity-current-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--accent-green);
+  border-radius: 16px 16px 0 0;
+}
+
+.humidity-icon {
+  background: rgba(16, 185, 129, 0.1);
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.droplet-icon {
+  font-size: 1.5rem;
+}
+
+.humidity-data {
+  flex: 1;
+}
+
+.humidity-value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.humidity-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.humidity-trend {
+  display: flex;
+  align-items: center;
+}
+
+.humidity-trend .trend {
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: 8px;
+}
+
+.humidity-trend .trend.positive {
+  background: rgba(34, 197, 94, 0.1);
+  color: #16a34a;
+}
+
+.humidity-trend .trend.negative {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+}
+
+/* Sensor Header with Data */
+.sensor-header-with-data {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  align-items: center;
+}
+
+.sensor-current-header {
+  background: var(--secondary-bg);
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+  max-height: 120px;
+  display: flex;
+  align-items: center;
+}
+
+/* Humidity Page Specific Layout */
+.humidity-main-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 2rem;
+  align-items: stretch;
+  margin-bottom: 2rem;
+}
+
+.humidity-stats-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.humidity-chart-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.humidity-alerts-section {
+  width: 100%;
+}
+
+.humidity-stats-section .sensor-stats {
+  background: linear-gradient(
+    135deg,
+    var(--secondary-bg) 0%,
+    rgba(16, 185, 129, 0.02) 100%
+  );
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.1);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.humidity-stats-section .sensor-stats::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #10b981, #059669, #047857);
+  border-radius: 16px 16px 0 0;
+}
+
+.humidity-stats-section .sensor-stats h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.humidity-stats-section .sensor-stats h3::before {
+  content: "📊";
+  font-size: 1.5rem;
+}
+
+.humidity-stats-section .sensor-stats .stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 1rem;
+  flex: 1;
+  align-content: center;
+}
+
+.humidity-stats-section .sensor-stats .stat-card {
+  background: var(--secondary-bg);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  min-height: auto;
+  border: 1px solid rgba(16, 185, 129, 0.15);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100px;
+}
+
+.humidity-stats-section .sensor-stats .stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.humidity-stats-section .sensor-stats .stat-card .stat-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #059669;
+  margin-bottom: 0.5rem;
+  line-height: 1;
+}
+
+.humidity-stats-section .sensor-stats .stat-card .stat-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.humidity-stats-section .sensor-stats .stat-card .stat-time {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  opacity: 0.8;
+}
+
+.humidity-alerts-section .sensor-alerts {
+  background: var(--secondary-bg);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+}
+
+.humidity-alerts-section .alert-settings {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+/* Temperature Page Header */
+.temperature-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  gap: 2rem;
+}
+
+.temperature-title-section {
+  flex: 1;
+}
+
+.temperature-title-section h1 {
+  margin: 0 0 0.5rem 0;
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.temperature-title-section p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.temperature-current-reading {
+  flex: 0 0 auto;
+}
+
+.temperature-current-card {
+  background: var(--secondary-bg);
+  border-radius: 16px;
+  padding: 1.5rem 2rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  min-width: 300px;
+  position: relative;
+}
+
+.temperature-current-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--accent-blue);
+  border-radius: 16px 16px 0 0;
+}
+
+.temperature-icon {
+  background: rgba(59, 130, 246, 0.1);
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.thermometer-icon {
+  font-size: 1.5rem;
+}
+
+.temperature-data {
+  flex: 1;
+}
+
+.temperature-value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.temperature-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.temperature-trend {
+  display: flex;
+  align-items: center;
+}
+
+.temperature-trend .trend {
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: 8px;
+}
+
+.temperature-trend .trend.positive {
+  background: rgba(34, 197, 94, 0.1);
+  color: #16a34a;
+}
+
+.temperature-trend .trend.negative {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+}
+
+/* Temperature Page Specific Layout */
+.temperature-main-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 2rem;
+  align-items: stretch;
+  margin-bottom: 2rem;
+}
+
+.temperature-stats-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.temperature-chart-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.temperature-alerts-section {
+  width: 100%;
+}
+
+.temperature-stats-section .sensor-stats {
+  background: linear-gradient(
+    135deg,
+    var(--secondary-bg) 0%,
+    rgba(59, 130, 246, 0.02) 100%
+  );
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.1);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.temperature-stats-section .sensor-stats::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #3b82f6, #2563eb, #1d4ed8);
+  border-radius: 16px 16px 0 0;
+}
+
+.temperature-stats-section .sensor-stats h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.temperature-stats-section .sensor-stats h3::before {
+  content: "🌡️";
+  font-size: 1.5rem;
+}
+
+.temperature-stats-section .sensor-stats .stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 1rem;
+  flex: 1;
+  align-content: center;
+}
+
+.temperature-stats-section .sensor-stats .stat-card {
+  background: var(--secondary-bg);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  min-height: auto;
+  border: 1px solid rgba(59, 130, 246, 0.15);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100px;
+}
+
+.temperature-stats-section .sensor-stats .stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.15);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.temperature-stats-section .sensor-stats .stat-card .stat-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #2563eb;
+  margin-bottom: 0.5rem;
+  line-height: 1;
+}
+
+.temperature-stats-section .sensor-stats .stat-card .stat-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.temperature-stats-section .sensor-stats .stat-card .stat-time {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  opacity: 0.8;
+}
+
+.temperature-alerts-section .sensor-alerts {
+  background: var(--secondary-bg);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+}
+
+.temperature-alerts-section .alert-settings {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+/* Performance Page Header */
+.performance-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  gap: 2rem;
+}
+
+.performance-title-section {
+  flex: 1;
+}
+
+.performance-title-section h1 {
+  margin: 0 0 0.5rem 0;
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.performance-title-section p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.performance-current-reading {
+  flex: 0 0 auto;
+}
+
+.performance-current-card {
+  background: var(--secondary-bg);
+  border-radius: 16px;
+  padding: 1.5rem 2rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  min-width: 300px;
+  position: relative;
+}
+
+.performance-current-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--accent-orange);
+  border-radius: 16px 16px 0 0;
+}
+
+.performance-icon {
+  background: rgba(245, 158, 11, 0.1);
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gauge-icon {
+  font-size: 1.5rem;
+}
+
+.performance-data {
+  flex: 1;
+}
+
+.performance-value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.performance-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.performance-trend {
+  display: flex;
+  align-items: center;
+}
+
+.performance-trend .trend {
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: 8px;
+}
+
+.performance-trend .trend.positive {
+  background: rgba(34, 197, 94, 0.1);
+  color: #16a34a;
+}
+
+.performance-trend .trend.negative {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+}
+
+/* Performance Page Specific Layout */
+.performance-main-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 2rem;
+  align-items: stretch;
+  margin-bottom: 2rem;
+}
+
+.performance-stats-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.performance-chart-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.performance-alerts-section {
+  width: 100%;
+}
+
+.performance-stats-section .sensor-stats {
+  background: linear-gradient(
+    135deg,
+    var(--secondary-bg) 0%,
+    rgba(245, 158, 11, 0.02) 100%
+  );
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.1);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.performance-stats-section .sensor-stats::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #f59e0b, #d97706, #b45309);
+  border-radius: 16px 16px 0 0;
+}
+
+.performance-stats-section .sensor-stats h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.performance-stats-section .sensor-stats h3::before {
+  content: "⚡";
+  font-size: 1.5rem;
+}
+
+.performance-stats-section .sensor-stats .stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 1rem;
+  flex: 1;
+  align-content: center;
+}
+
+.performance-stats-section .sensor-stats .stat-card {
+  background: var(--secondary-bg);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  min-height: auto;
+  border: 1px solid rgba(245, 158, 11, 0.15);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100px;
+}
+
+.performance-stats-section .sensor-stats .stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(245, 158, 11, 0.15);
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.performance-stats-section .sensor-stats .stat-card .stat-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #d97706;
+  margin-bottom: 0.5rem;
+  line-height: 1;
+}
+
+.performance-stats-section .sensor-stats .stat-card .stat-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.performance-stats-section .sensor-stats .stat-card .stat-time {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  opacity: 0.8;
+}
+
+.performance-alerts-section .sensor-alerts {
+  background: var(--secondary-bg);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+}
+
+.performance-alerts-section .alert-settings {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+/* Grid adjustments for sensor pages */
+.humidity-main-grid,
+.temperature-main-grid,
+.performance-main-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.humidity-stats-section,
+.temperature-stats-section,
+.performance-stats-section {
+  grid-column: 1;
+}
+
+.humidity-chart-section,
+.temperature-chart-section,
+.performance-chart-section {
+  grid-column: 2;
+  min-height: 450px;
+  display: flex;
+  flex-direction: column;
+}
+
+.humidity-chart-section > *,
+.temperature-chart-section > *,
+.performance-chart-section > * {
+  flex: 1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .humidity-main-grid,
+  .temperature-main-grid,
+  .performance-main-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .humidity-stats-section,
+  .temperature-stats-section,
+  .performance-stats-section,
+  .humidity-chart-section,
+  .temperature-chart-section,
+  .performance-chart-section {
+    grid-column: 1;
+  }
+}

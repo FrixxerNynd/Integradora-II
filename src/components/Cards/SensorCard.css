@@ -1,0 +1,166 @@
+.sensor-card {
+  background: var(--secondary-bg);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.sensor-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.sensor-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--accent-blue);
+}
+
+.sensor-card--blue::before {
+  background: var(--accent-blue);
+}
+
+.sensor-card--green::before {
+  background: var(--accent-green);
+}
+
+.sensor-card--purple::before {
+  background: var(--accent-purple);
+}
+
+.sensor-card--orange::before {
+  background: var(--accent-orange);
+}
+
+.sensor-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.sensor-card__icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.sensor-card--blue .sensor-card__icon {
+  background: linear-gradient(135deg, var(--accent-blue), #1d4ed8);
+}
+
+.sensor-card--green .sensor-card__icon {
+  background: linear-gradient(135deg, var(--accent-green), #047857);
+}
+
+.sensor-card--purple .sensor-card__icon {
+  background: linear-gradient(135deg, var(--accent-purple), #7c3aed);
+}
+
+.sensor-card--orange .sensor-card__icon {
+  background: linear-gradient(135deg, var(--accent-orange), #d97706);
+}
+
+.sensor-card__trend {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.sensor-card--blue .sensor-card__trend {
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--accent-blue);
+}
+
+.sensor-card--green .sensor-card__trend {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--accent-green);
+}
+
+.sensor-card--purple .sensor-card__trend {
+  background: rgba(139, 92, 246, 0.1);
+  color: var(--accent-purple);
+}
+
+.sensor-card--orange .sensor-card__trend {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--accent-orange);
+}
+
+.sensor-card__content {
+  margin-bottom: 1rem;
+}
+
+.sensor-card__title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.sensor-card__value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.sensor-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sensor-card__status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.status-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.status-indicator.positive {
+  background: var(--accent-green);
+}
+
+.status-indicator.negative {
+  background: var(--accent-red);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sensor-card {
+    padding: 1rem;
+  }
+
+  .sensor-card__value {
+    font-size: 1.5rem;
+  }
+
+  .sensor-card__icon {
+    width: 40px;
+    height: 40px;
+  }
+}
