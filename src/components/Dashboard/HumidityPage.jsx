@@ -1,19 +1,27 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import SensorToggle from "../Charts/SensorToggle";
 import LineChart from "../Charts/LineChart";
 import { chartData } from "../../data/mockData";
 import "./SensorPage.css";
+import { getData } from "../../data/DashboardService";
 
 const HumidityPage = () => {
-  const humidityData = {
-    id: 2,
-    title: "Humedad",
-    value: "65%",
-    icon: "droplets",
-    trend: "-1.2%",
-    isPositive: false,
-    color: "green",
-  };
+  const [loading, setLoading] = useState(true);
+  const [humidityData, setHumidityData] = useState(null);
+  const [latestRecord, setLatestRecord] = useState(null);
+  const [error, setError] = useState(null);
+  /**
+   const humidityData = {
+     id: 2,
+     title: "Humedad",
+     value: "65%",
+     icon: "droplets",
+     trend: "-1.2%",
+     isPositive: false,
+     color: "green",
+   };
+   * 
+   */
 
   const humidityHistory = [
     { time: "Hace 6h", value: 68 },
@@ -40,6 +48,41 @@ const HumidityPage = () => {
     console.log("Filtros de humedad aplicados:", filters);
     // Aquí puedes implementar la lógica para filtrar los datos
   };
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        const rawData = await getData();
+        const sortedData = rawData.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+        if (sortedData.length > 0) {
+          setLatestRecord(sortedData[sortedData.length - 1]);
+        }
+        const formattedData = sortedData.map((record) => {
+          const displayDateTime = new Date(record.fecha).toLocaleString('es-ES', {
+            day: '2-digit',
+            month: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+          });
+
+          return {
+            time: displayDateTime,
+            value: record.humedad,
+          };
+        });
+
+        setHumidityData(formattedData);
+        setError(null);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
+
 
   return (
     <div className="sensor-page">
@@ -74,13 +117,18 @@ const HumidityPage = () => {
           </div>
         </div>
 
+              {/* Chart Section */}
         <div className="humidity-chart-section">
+        {loading && <p>Cargando gráfica...</p>}
+        {error && <p className="error-message">Error al cargar gráfica: {error}</p>}
+        {humidityData && (
           <LineChart
-            data={humidityHistory}
-            title="Tendencia de Humedad (Últimas 6 horas)"
-            color="#10b981"
+            data={humidityData}
+            title="Grafica de Humedad"
+            color="#3b82f6"
             height={400}
           />
+        )}
         </div>
       </div>
 

@@ -1,19 +1,28 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import SensorToggle from "../Charts/SensorToggle";
 import LineChart from "../Charts/LineChart";
 import { chartData } from "../../data/mockData";
 import "./SensorPage.css";
+import { getData } from "../../data/DashboardService";
 
 const PerformancePage = () => {
-  const movementData = {
-    id: 3,
-    title: "Movimiento",
-    value: "Active",
-    icon: "movement",
-    trend: "+12 eventos",
-    isPositive: true,
-    color: "orange",
-  };
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [movementData, setMovementData] = useState(null);
+  const [latestRecord, setLatestRecord] = useState(null);
+
+  /**
+   const movementData = {
+     id: 3,
+     title: "Movimiento",
+     value: "Active",
+     icon: "movement",
+     trend: "+12 eventos",
+     isPositive: true,
+     color: "orange",
+   };
+   * 
+   */
 
   const movementHistory = [
     { time: "Hace 6h", value: 3 },
@@ -27,9 +36,8 @@ const PerformancePage = () => {
 
   const movementStats = [
     { label: "Detecciones", value: "127", time: "Hoy" },
-    { label: "Última actividad", value: "2 min", time: "Hace" },
     { label: "Zona activa", value: "Sala", time: "Principal" },
-    { label: "Sensibilidad", value: "Media", time: "Configurado" },
+    { label: "Última actividad", value: latestRecord?.fecha }
   ];
 
   const handleSensorToggle = (state) => {
@@ -41,6 +49,38 @@ const PerformancePage = () => {
     // Aquí puedes implementar la lógica para filtrar los datos
   };
 
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const rawData = await getData();
+        const sortedData = rawData.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+        if (sortedData.length > 0) {
+          setLatestRecord(sortedData[sortedData.length - 1]);
+        } 
+        const formattedData = sortedData.map((record) => {
+          const displayDateTIme = new Date(record.fecha).toLocaleDateString('es-ES', {
+            day: '2-digit',
+            month: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+          });
+
+          return {
+            time: displayDateTIme,
+            value: Number(record.movimiento),
+          };
+        });
+        setMovementData(formattedData);
+        setError(null);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadData();
+  }, [])
+
   return (
     <div className="sensor-page">
       <div className="performance-header">
@@ -48,6 +88,7 @@ const PerformancePage = () => {
           <h1>Monitoreo de Movimiento</h1>
         </div>
 
+        {/* Toggle Section */}
         <div className="performance-current-reading">
           <SensorToggle
             title="Control del Sensor de Movimiento"
@@ -58,6 +99,7 @@ const PerformancePage = () => {
         </div>
       </div>
 
+        {/* Stats Section */}
       <div className="performance-main-grid">
         <div className="performance-stats-section">
           <div className="sensor-stats">
@@ -74,16 +116,23 @@ const PerformancePage = () => {
           </div>
         </div>
 
+
+        {/* Chart Section */}
         <div className="performance-chart-section">
+        {loading && <div>Cargando datos... </div>}
+        {error && <div className="error-message">Error: {error} </div>}
+          {movementData && (
           <LineChart
-            data={movementHistory}
+            data={movementData}
             title="Detecciones de Movimiento (Últimas 6 horas)"
             color="#f59e0b"
             height={400}
           />
+          )}
         </div>
       </div>
 
+      {/* Configuration Section */}
       <div className="performance-alerts-section">
         <div className="sensor-alerts">
           <h3>Configuración de Detección</h3>

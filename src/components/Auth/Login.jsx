@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import { User, Lock, Eye, EyeOff } from "lucide-react";
+import { loginApi } from "../../data/AuthService";
+import { useAuth } from "./AuthContext";
 import "./Login.css";
 
 const Login = ({ onLogin }) => {
   const [credentials, setCredentials] = useState({
-    username: "",
+    email: "",
     password: "",
   });
+  const auth = useAuth();
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -14,21 +17,25 @@ const Login = ({ onLogin }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setError("");
+    setError(null);
 
-    // Simulate API call delay
-    setTimeout(() => {
-      if (
-        credentials.username === "admin" &&
-        credentials.password === "admin"
-      ) {
-        localStorage.setItem("isAuthenticated", "true");
-        onLogin();
-      } else {
-        setError("Usuario o contraseña incorrectos");
+    try {
+      const response = await loginApi(credentials);
+      if (response.user && response.token) {
+        console.log('%cLogin Success: Calling auth.login() with user:', 'color: green;', response.user);
+        auth.login(
+          response.user, 
+          credentials.email, 
+          response.token, 
+          false
+        );
       }
+    } catch (error) {
+      console.error("Error al iniciar sesión:", error);
+      setError("Error al iniciar sesión");
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   const handleChange = (e) => {
@@ -57,15 +64,15 @@ const Login = ({ onLogin }) => {
 
         <form className="login-form" onSubmit={handleSubmit}>
           <div className="input-group">
-            <label htmlFor="username">Usuario</label>
+            <label htmlFor="username">Correo</label>
             <div className="input-wrapper">
               <User size={20} className="input-icon" />
               <input
                 type="text"
-                id="username"
-                name="username"
-                placeholder="Ingresa tu usuario"
-                value={credentials.username}
+                id="email"
+                name="email"
+                placeholder="Ingresa tu correo"
+                value={credentials.email}
                 onChange={handleChange}
                 required
               />

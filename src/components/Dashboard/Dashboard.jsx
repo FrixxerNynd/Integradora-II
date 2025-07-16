@@ -1,44 +1,47 @@
-import React from "react";
-import SensorCard from "../Cards/SensorCard";
-import LineChart from "../Charts/LineChart";
-import PieChart from "../Charts/PieChart";
+import React, { useEffect, useState } from "react";
+import LineChart from "../Charts/LineChart"; // Correcto: Solo importa el componente contenedor.
 import ActivityFeed from "./ActivityFeed";
 import AIChat from "./AIChat";
-import { sensorData, chartData, activityData } from "../../data/mockData";
+import { activityData } from "../../data/mockData"; // Correcto: Solo importa los datos que sí usas.
 import "./Dashboard.css";
+import { getData } from "../../data/DashboardService";
 
 const Dashboard = ({ setActiveItem }) => {
-  // Crear cards navegables con miniaturas
+  // Configura los estados iniciales
+  const [loading, setLoading] = useState(true); // Inicia en `true` para mostrar el estado de carga.
+  const [error, setError] = useState(null);
+  const [temperatureData, setTemperatureData] = useState(null); // Inicia en `null` para más claridad.
+  const [latestRecord, setLatestRecord] = useState(null);
+
+ //Obtiene los ultimos valores de temperatura, humedad y movimiento
+  const latestTemperature = latestRecord ? `${latestRecord.temperatura}°C` : "---";
+  const latestHumidity = latestRecord ? `${latestRecord.humedad}%` : "---";
+  const latestMovement = latestRecord ? (latestRecord.movimiento ? 'Detectado' : 'Sin movimiento') : "---";
+
   const navigationCards = [
     {
       id: 1,
       title: "Temperatura",
-      value: "24.5°C",
-      trend: "+2.1%",
+      value: latestTemperature, // Usa el valor calculado de la última lectura.
+      trend: "Ultima temperatura registrada",
       isPositive: true,
       color: "#3b82f6",
       target: "temperature",
       miniChart: "line",
     },
-    {
-      id: 2,
-      title: "Humedad",
-      value: "65%",
-      trend: "-1.2%",
-      isPositive: false,
-      color: "#10b981",
-      target: "humidity",
-      miniChart: "circular",
-    },
-    {
-      id: 3,
-      title: "Movimiento",
-      value: "92%",
-      trend: "+5.3%",
+    { id: 2, title: "Humedad", value: latestHumidity,
+      trend: "Ultima humedad registrada",
       isPositive: true,
-      color: "#f59e0b",
-      target: "performance",
-      miniChart: "bar",
+      color: "#3b82f6",
+      target: "humidity",
+      miniChart: "line",
+    },
+    { id: 3, title: "Movimiento", value: latestMovement,
+      trend: "Ultima actividad registrada",
+      isPositive: true,
+      color: "#3b82f6",
+      target: "movement",
+      miniChart: "line",
     },
   ];
 
@@ -46,178 +49,91 @@ const Dashboard = ({ setActiveItem }) => {
     setActiveItem(target);
   };
 
+  //Carga los datos
+useEffect(() => {
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      const rawData = await getData();
+      const sortedData = rawData.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+      
+      if (sortedData.length > 0) {
+        setLatestRecord(sortedData[sortedData.length - 1]);
+      }
+
+      // Agrupa los datos por día en un objeto.
+      const dailyData = sortedData.reduce((acc, record) => {
+        const day = new Date(record.fecha).toISOString().split('T')[0]; // Obtiene la fecha como "YYYY-MM-DD"
+        
+        if (!acc[day]) {
+          acc[day] = { totalTemp: 0, count: 0 };
+        }
+        
+        acc[day].totalTemp += record.temperatura;
+        acc[day].count += 1;
+        
+        return acc;
+      }, {});
+
+      // Convierte el objeto agrupado al formato que necesita la gráfica.
+      const formattedData = Object.keys(dailyData).map(day => {
+        const averageTemp = dailyData[day].totalTemp / dailyData[day].count;
+        const displayDate = new Date(day).toLocaleDateString('es-ES', {
+          day: '2-digit',
+          month: '2-digit'
+        }); // Formato "dd/mm"
+
+        return {
+          time: displayDate, // La etiqueta para el eje X ahora es el día
+          value: parseFloat(averageTemp.toFixed(1)) // El valor es el promedio, redondeado
+        };
+      });
+
+      setTemperatureData(formattedData);
+      setError(null);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  loadData();
+}, []);
+
   return (
     <div className="dashboard">
-      {/* Layout principal con gráfica grande y actividad al lado */}
       <div className="dashboard-main-layout">
-        {/* Sección izquierda con sensores y gráfica principal */}
         <div className="dashboard-left">
-          {/* Navigation Cards Grid - Con miniaturas clickeables */}
           <div className="dashboard-grid dashboard-grid--navigation">
             {navigationCards.map((card) => (
-              <div
-                key={card.id}
-                className="navigation-card"
-                onClick={() => handleCardClick(card.target)}
-              >
+              <div key={card.id} className="navigation-card" onClick={() => handleCardClick(card.target)}>
                 <div className="navigation-card-content">
                   <div className="navigation-card-info">
                     <h3 className="navigation-card-title">{card.title}</h3>
                     <div className="navigation-card-value">{card.value}</div>
-                    <div
-                      className={`navigation-card-trend ${
-                        card.isPositive ? "positive" : "negative"
-                      }`}
-                    >
-                      {card.trend}
-                    </div>
+                    <div className={`navigation-card-trend ${card.isPositive ? "positive" : "negative"}`}>{card.trend}</div>
                   </div>
-
-                  <div className="navigation-card-mini-chart">
-                    {card.miniChart === "line" && (
-                      <div className="mini-line-chart">
-                        <svg width="60" height="30" viewBox="0 0 60 30">
-                          <polyline
-                            fill="none"
-                            stroke={card.color}
-                            strokeWidth="2"
-                            points="0,25 10,20 20,15 30,10 40,12 50,8 60,5"
-                          />
-                        </svg>
-                      </div>
-                    )}
-
-                    {card.miniChart === "circular" && (
-                      <div className="mini-circular-chart">
-                        <svg width="40" height="40" viewBox="0 0 40 40">
-                          <circle
-                            cx="20"
-                            cy="20"
-                            r="15"
-                            stroke="#e5e7eb"
-                            strokeWidth="3"
-                            fill="none"
-                          />
-                          <circle
-                            cx="20"
-                            cy="20"
-                            r="15"
-                            stroke={card.color}
-                            strokeWidth="3"
-                            fill="none"
-                            strokeDasharray={`${65 * 0.94} ${100 * 0.94}`}
-                            strokeDashoffset="0"
-                            transform="rotate(-90 20 20)"
-                          />
-                        </svg>
-                      </div>
-                    )}
-
-                    {card.miniChart === "bar" && (
-                      <div className="mini-bar-chart">
-                        <svg width="50" height="30" viewBox="0 0 50 30">
-                          <rect
-                            x="2"
-                            y="20"
-                            width="6"
-                            height="8"
-                            fill={card.color}
-                            opacity="0.7"
-                          />
-                          <rect
-                            x="10"
-                            y="15"
-                            width="6"
-                            height="13"
-                            fill={card.color}
-                            opacity="0.8"
-                          />
-                          <rect
-                            x="18"
-                            y="10"
-                            width="6"
-                            height="18"
-                            fill={card.color}
-                          />
-                          <rect
-                            x="26"
-                            y="12"
-                            width="6"
-                            height="16"
-                            fill={card.color}
-                            opacity="0.9"
-                          />
-                          <rect
-                            x="34"
-                            y="8"
-                            width="6"
-                            height="20"
-                            fill={card.color}
-                          />
-                          <rect
-                            x="42"
-                            y="5"
-                            width="6"
-                            height="23"
-                            fill={card.color}
-                          />
-                        </svg>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div className="navigation-card-overlay">
-                  <span>Ver detalles →</span>
                 </div>
               </div>
             ))}
           </div>
-
-          {/* Gráfica principal sin contenedor extra */}
-          <LineChart
-            data={chartData.temperature}
-            title="Tendencia de Temperatura"
-            color="#3b82f6"
-            height={400}
-          />
+          
+          <div className="main-chart-container">
+            {loading && <div>Cargando datos... ⏳</div>}
+            {error && <div className="error-message">Error: {error} 😟</div>}
+            {temperatureData && <LineChart data={temperatureData} />}
+          </div>
         </div>
 
-        {/* Sección derecha reorganizada */}
         <div className="dashboard-right">
-          {/* Sensores Activos */}
-          <div className="active-sensors-section">
-            <h3>
-              Sensores Activos: <span className="sensor-count">3</span>
-            </h3>
-          </div>
-
-          {/* Actividad Reciente expandida */}
           <div className="activity-section-expanded">
-            <ActivityFeed
-              activities={activityData}
-              title="Actividad Reciente"
-            />
-          </div>
-
-          {/* Fecha con su propio recuadro */}
-          <div className="date-section-standalone">
-            <span className="current-date">
-              {new Date().toLocaleDateString("es-ES", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric",
-              })}
-            </span>
+            <ActivityFeed activities={activityData} title="Actividad Reciente" />
           </div>
         </div>
       </div>
-
-      {/* AI Chat Section - Replace statistics */}
       <div className="dashboard-grid dashboard-grid--ai">
-        <div className="chart-section ai-section">
-          <AIChat />
-        </div>
+        <AIChat />
       </div>
     </div>
   );

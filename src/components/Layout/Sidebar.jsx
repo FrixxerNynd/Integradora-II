@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { NavLink } from "react-router-dom"; // 1. Importa NavLink
 import {
   Home,
   Settings,
@@ -8,65 +9,81 @@ import {
   LogOut,
 } from "lucide-react";
 import "./Sidebar.css";
+import { useAuth } from "../Auth/AuthContext";
 
-const Sidebar = ({ activeItem, setActiveItem, onLogout }) => {
+
+// 2. Elimina las props 'activeItem' y 'setActiveItem'
+const Sidebar = ({ isOpen,onToggleSidebar, onLogout }) => {
+  const { user } = useAuth();
+  // El estado 'isCollapsed' se puede mantener o eliminar si 'isOpen' lo controla todo
+  // Para este ejemplo, asumimos que 'isOpen' viene del padre y controla el colapso.
+
+  // 3. Actualiza 'id' por 'path' para que coincida con tus rutas
   const menuItems = [
-    { id: "dashboard", label: "Dashboard", icon: Home },
-    { id: "performance", label: "Movimiento", icon: TrendingUp },
-    { id: "temperature", label: "Temperatura", icon: Thermometer },
-    { id: "humidity", label: "Humedad", icon: Droplets },
-    { id: "settings", label: "Configuración", icon: Settings },
+    { path: "/dashboard", label: "Dashboard", icon: Home },
+    { path: "/performance", label: "Movimiento", icon: TrendingUp },
+    { path: "/temperature", label: "Temperatura", icon: Thermometer },
+    { path: "/humidity", label: "Humedad", icon: Droplets },
+    { path: "/settings", label: "Configuración", icon: Settings },
   ];
 
   return (
-    <div className="sidebar">
+    <div className={`sidebar ${!isOpen ? "collapsed" : ""}`}>
       <div className="sidebar-header">
-        <div className="logo">
-          <div className="logo-icon">🚀</div>
-          <span className="logo-text">NeoDev</span>
-        </div>
+            <button className="logo-btn" onClick={onToggleSidebar}>
+              <div className="logo">
+                <div className="logo-icon">🚀</div>
+                {isOpen && <span className="logo-text">NeoDev</span>}
+              </div>
+            </button>
       </div>
 
       <nav className="sidebar-nav">
         {menuItems.map((item) => {
           const Icon = item.icon;
           return (
-            <button
-              key={item.id}
-              className={`nav-item ${activeItem === item.id ? "active" : ""}`}
-              onClick={() => setActiveItem(item.id)}
+            // 4. Reemplaza <button> con <NavLink>
+            <NavLink
+              key={item.path}
+              to={item.path}
+              className={({ isActive }) => // NavLink te da 'isActive' para el estilo
+                `nav-item ${isActive ? "active" : ""}`
+              }
+              title={!isOpen ? item.label : ""}
             >
               <Icon size={20} />
-              <span>{item.label}</span>
-            </button>
+              {isOpen && <span>{item.label}</span>}
+            </NavLink>
           );
         })}
       </nav>
 
       <div className="sidebar-logout">
         <button
-          className="logout-btn-sidebar"
+          className="logout-btn-sidebar nav-item"
           onClick={onLogout}
-          title="Cerrar Sesión"
+          title={!isOpen ? "Cerrar Sesión" : ""}
         >
           <LogOut size={20} />
-          <span>Cerrar Sesión</span>
+          {isOpen && <span>Cerrar Sesión</span>}
         </button>
       </div>
-
-      <div className="sidebar-footer">
-        <div className="user-info">
-          <div className="user-avatar">
-            <img
-              src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face"
-              alt="Usuario"
-            />
-          </div>
-          <div className="user-details">
-            <span className="user-name">Alejandro Villarreal</span>
-          </div>
+      
+      {/* El footer puede usar el mismo prop 'isOpen' */}
+      {isOpen && (
+        <div className="sidebar-footer">
+          {/* ... tu información de usuario ... */}
+          {/* Asegúrate de que 'user' no sea nulo antes de intentar usarlo */}
+          {user && (
+            <div className="user-info">
+                <div className="user-details">
+                    {/* ACCEDE A LA PROPIEDAD '.name' */}
+                    <span className="user-name">{user.name}</span>
+                </div>
+            </div>
+          )}
         </div>
-      </div>
+      )}
     </div>
   );
 };

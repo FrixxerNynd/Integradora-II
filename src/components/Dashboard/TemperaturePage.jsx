@@ -1,19 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import SensorToggle from "../Charts/SensorToggle";
 import LineChart from "../Charts/LineChart";
 import { chartData } from "../../data/mockData";
 import "./SensorPage.css";
+import { getData } from "../../data/DashboardService";
 
 const TemperaturePage = () => {
-  const temperatureData = {
-    id: 1,
-    title: "Temperatura",
-    value: "24.5°C",
-    icon: "thermometer",
-    trend: "+2.1%",
-    isPositive: true,
-    color: "blue",
-  };
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [temperatureData, setTemperatureData] = useState(null);
+  const [latestRecord, setLatestRecord] = useState(null);
+  /**
+   const temperatureData = {
+     id: 1,
+     title: "Temperatura",
+     value: "24.5°C",
+     icon: "thermometer",
+     trend: "+2.1%",
+     isPositive: true,
+     color: "blue",
+   };
+   * 
+   */
 
   const temperatureHistory = [
     { time: "Hace 6h", value: 22 },
@@ -40,7 +48,43 @@ const TemperaturePage = () => {
     console.log("Filtros de temperatura aplicados:", filters);
     // Aquí puedes implementar la lógica para filtrar los datos
   };
+  useEffect(() => {
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      const rawData = await getData();
+      const sortedData = rawData.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
 
+      if (sortedData.length > 0) {
+        setLatestRecord(sortedData[sortedData.length - 1]);
+      }
+
+      const formattedData = sortedData.map((record) => {
+        // Formateamos para que muestre "dd/mm, hh:mm"
+        const displayDateTime = new Date(record.fecha).toLocaleString('es-ES', {
+          day: '2-digit',
+          month: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+        });
+
+        return {
+          time: displayDateTime, // La etiqueta para el eje X
+          value: record.temperatura, // El valor para el eje Y
+        };
+      });
+
+      setTemperatureData(formattedData);
+      setError(null);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  loadData();
+}, []);
   return (
     <div className="sensor-page">
       <div className="temperature-header">
@@ -75,12 +119,16 @@ const TemperaturePage = () => {
         </div>
 
         <div className="temperature-chart-section">
+        {loading && <div>Cargando datos... </div>}
+        {error && <div className="error-message">Error: {error} </div>}
+        {temperatureData && (
           <LineChart
-            data={temperatureHistory}
+            data={temperatureData}
             title="Tendencia de Temperatura (Últimas 6 horas)"
             color="#3b82f6"
             height={400}
           />
+        )}
         </div>
       </div>
 

@@ -10,6 +10,12 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  transition: all 0.3s ease;
+}
+
+/* Ajustar el margen cuando la barra lateral está colapsada */
+.sidebar.collapsed + .app-main {
+  margin-left: 70px;
   transition: margin-left 0.3s ease;
 }
 
@@ -95,7 +101,11 @@
 /* Mobile responsiveness */
 @media (max-width: 768px) {
   .app-main {
-    margin-left: 0;
+    margin-left: 0 !important;
+  }
+  
+  .sidebar.collapsed + .app-main {
+    margin-left: 70px !important;
   }
 
   .sidebar {
