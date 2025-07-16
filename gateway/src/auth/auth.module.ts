@@ -1,15 +1,20 @@
-// auth/auth.module.ts
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
-    JwtModule.register({
-      secret: process.env.JWT_SECRET, // debe ser igual al del microservicio 'user'
-      signOptions: { expiresIn: '40m' },
+    JwtModule.registerAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        const secret = configService.get<string>('SECRET_KEY');
+        console.log('SECRET_KEY cargado:', process.env.SECRET_KEYS);
+        return {
+          secret: 'FerchSecret',
+          signOptions: { expiresIn: '40m' },
+        };
+      },
     }),
   ],
   providers: [JwtAuthGuard],
