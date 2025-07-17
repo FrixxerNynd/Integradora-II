@@ -12,9 +12,6 @@ const DateFilter = ({ onFilterChange }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const periods = [
-    { value: "today", label: "Hoy" },
-    { value: "week", label: "7 días" },
-    { value: "month", label: "30 días" },
     { value: "custom", label: "Personalizado" },
   ];
 

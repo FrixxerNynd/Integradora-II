@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import LineChart from "../Charts/LineChart"; // Correcto: Solo importa el componente contenedor.
 import ActivityFeed from "./ActivityFeed";
 import AIChat from "./AIChat";
-import { activityData } from "../../data/mockData"; // Correcto: Solo importa los datos que sí usas.
+import { activityData } from "../../Service/mockData"; // Correcto: Solo importa los datos que sí usas.
 import "./Dashboard.css";
-import { getData } from "../../data/DashboardService";
+import { getData } from "../../Service/DashboardService";
 
 const Dashboard = ({ setActiveItem }) => {
   // Configura los estados iniciales
@@ -18,6 +18,10 @@ const Dashboard = ({ setActiveItem }) => {
   const latestHumidity = latestRecord ? `${latestRecord.humedad}%` : "---";
   const latestMovement = latestRecord ? (latestRecord.movimiento ? 'Detectado' : 'Sin movimiento') : "---";
 
+    useEffect(() => {
+      window.scrollTo(0, 0);
+    })
+    
   const navigationCards = [
     {
       id: 1,

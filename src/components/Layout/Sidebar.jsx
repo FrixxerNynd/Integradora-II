@@ -20,7 +20,7 @@ const Sidebar = ({ isOpen,onToggleSidebar, onLogout }) => {
 
   // 3. Actualiza 'id' por 'path' para que coincida con tus rutas
   const menuItems = [
-    { path: "/dashboard", label: "Dashboard", icon: Home },
+    { path: "/dashboard", label: "Inicio", icon: Home },
     { path: "/performance", label: "Movimiento", icon: TrendingUp },
     { path: "/temperature", label: "Temperatura", icon: Thermometer },
     { path: "/humidity", label: "Humedad", icon: Droplets },

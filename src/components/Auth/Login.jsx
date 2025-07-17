@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { User, Lock, Eye, EyeOff } from "lucide-react";
-import { loginApi } from "../../data/AuthService";
+import { loginApi } from "../../Service/AuthService";
 import { useAuth } from "./AuthContext";
 import "./Login.css";
 

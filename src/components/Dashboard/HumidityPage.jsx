@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from "react";
 import SensorToggle from "../Charts/SensorToggle";
 import LineChart from "../Charts/LineChart";
-import { chartData } from "../../data/mockData";
+import { chartData } from "../../Service/mockData";
 import "./SensorPage.css";
-import { getData } from "../../data/DashboardService";
+import { getData, filterData } from "../../Service/DashboardService";
 
 const HumidityPage = () => {
   const [loading, setLoading] = useState(true);
   const [humidityData, setHumidityData] = useState(null);
   const [latestRecord, setLatestRecord] = useState(null);
   const [error, setError] = useState(null);
+  const [rawData, setRawData] = useState([]);
   /**
    const humidityData = {
      id: 2,
@@ -44,9 +45,12 @@ const HumidityPage = () => {
     console.log("Sensor de Humedad:", state ? "ENCENDIDO" : "APAGADO");
   };
 
-  const handleFilterChange = (filters) => {
-    console.log("Filtros de humedad aplicados:", filters);
-    // Aquí puedes implementar la lógica para filtrar los datos
+  const handleFilterChange = (filters, dataToFilter = rawData) => {
+    const { filteredData, formattedData, latestRecord } = filterData(filters, dataToFilter, "humedad");
+    setHumidityData(formattedData);
+    if (latestRecord) {
+      setLatestRecord(latestRecord);
+    }
   };
   useEffect(() => {
     const loadData = async () => {
@@ -54,6 +58,7 @@ const HumidityPage = () => {
         setLoading(true);
         const rawData = await getData();
         const sortedData = rawData.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+        setRawData(sortedData);
         if (sortedData.length > 0) {
           setLatestRecord(sortedData[sortedData.length - 1]);
         }

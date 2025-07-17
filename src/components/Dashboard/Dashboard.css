@@ -5,6 +5,7 @@
   gap: 2rem;
   max-width: 1400px;
   margin: 0 auto;
+  scroll-behavior: smooth
 }
 
 /* Layout principal con dos columnas */

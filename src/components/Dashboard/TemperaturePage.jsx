@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from "react";
 import SensorToggle from "../Charts/SensorToggle";
 import LineChart from "../Charts/LineChart";
-import { chartData } from "../../data/mockData";
+import { chartData } from "../../Service/mockData";
 import "./SensorPage.css";
-import { getData } from "../../data/DashboardService";
+import { getData, filterData } from "../../Service/DashboardService";
 
 const TemperaturePage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [temperatureData, setTemperatureData] = useState(null);
   const [latestRecord, setLatestRecord] = useState(null);
+  const [rawData, setRawData] = useState([]);
+  const [minTemp, setMinTemp] = useState();
+  const [maxTemp, setMaxTemp] = useState();
+  const [tempVariation, setTempVariation] = useState();
   /**
    const temperatureData = {
      id: 1,
@@ -34,57 +38,86 @@ const TemperaturePage = () => {
   ];
 
   const temperatureStats = [
-    { label: "Mínima", value: "18.2°C", time: "6:00 AM" },
-    { label: "Máxima", value: "28.7°C", time: "2:30 PM" },
+    { label: "Mínima", value: minTemp+"°C", time: "24 horas" },
+    { label: "Máxima", value: maxTemp+"°C", time: "24 horas" },
     { label: "Promedio", value: "23.4°C", time: "24 horas" },
-    { label: "Variación", value: "±2.1°C", time: "Semana" },
+    { label: "Variación", value: tempVariation+"°C", time: "24 horas" },
   ];
 
   const handleSensorToggle = (state) => {
     console.log("Sensor de Temperatura:", state ? "ENCENDIDO" : "APAGADO");
   };
 
-  const handleFilterChange = (filters) => {
-    console.log("Filtros de temperatura aplicados:", filters);
-    // Aquí puedes implementar la lógica para filtrar los datos
-  };
-  useEffect(() => {
-  const loadData = async () => {
-    try {
-      setLoading(true);
-      const rawData = await getData();
-      const sortedData = rawData.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+  const handleFilterChange = (filters, dataToFilter = rawData) => {
+    const {filteredData, formattedData, latestRecord } = filterData(filters, dataToFilter, "temperatura");
 
-      if (sortedData.length > 0) {
-        setLatestRecord(sortedData[sortedData.length - 1]);
-      }
-
-      const formattedData = sortedData.map((record) => {
-        // Formateamos para que muestre "dd/mm, hh:mm"
-        const displayDateTime = new Date(record.fecha).toLocaleString('es-ES', {
-          day: '2-digit',
-          month: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit',
-        });
-
-        return {
-          time: displayDateTime, // La etiqueta para el eje X
-          value: record.temperatura, // El valor para el eje Y
-        };
-      });
-
-      setTemperatureData(formattedData);
-      setError(null);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+    setTemperatureData(formattedData);
+    if (latestRecord) {
+      setLatestRecord(latestRecord);
     }
   };
+  
 
-  loadData();
-}, []);
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        const rawData = await getData();
+  
+        const sortedData = rawData.sort(
+          (a, b) => new Date(a.fecha) - new Date(b.fecha)
+        );
+  
+        setRawData(sortedData);
+  
+        // Último registro
+        if (sortedData.length > 0) {
+          setLatestRecord(sortedData[sortedData.length - 1]);
+        }
+  
+        // Tomar los últimos 24 registros (o los que haya disponibles)
+        const lastN = latestRecord;
+        const recentData = sortedData.slice(-lastN);
+  
+        // Calcular min, max y variación
+        const temperatures = recentData.map((r) => r.temperatura);
+        const min = Math.min(...temperatures);
+        const max = Math.max(...temperatures);
+        const variation = max - min;
+  
+        setMinTemp(min);
+        setMaxTemp(max);
+        setTempVariation(variation);
+  
+        // Formatear datos para la gráfica
+        const formattedData = recentData.map((record) => {
+          const displayDateTime = new Date(record.fecha).toLocaleString('es-ES', {
+            day: '2-digit',
+            month: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+          });
+  
+          return {
+            time: displayDateTime,
+            value: record.temperatura,
+          };
+        });
+  
+        setTemperatureData(formattedData);
+        setError(null);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    loadData();
+  }, []);
+  
+  
   return (
     <div className="sensor-page">
       <div className="temperature-header">

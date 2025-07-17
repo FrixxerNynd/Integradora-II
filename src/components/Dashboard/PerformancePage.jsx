@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react";
 import SensorToggle from "../Charts/SensorToggle";
 import LineChart from "../Charts/LineChart";
-import { chartData } from "../../data/mockData";
 import "./SensorPage.css";
-import { getData } from "../../data/DashboardService";
+import { getData, filterData } from "../../Service/DashboardService";
 
 const PerformancePage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [movementData, setMovementData] = useState(null);
   const [latestRecord, setLatestRecord] = useState(null);
+  const [rawData, setRawData] = useState([]);
+  const [activaciones, setActivaciones] = useState(null);
 
   /**
    const movementData = {
@@ -24,18 +25,9 @@ const PerformancePage = () => {
    * 
    */
 
-  const movementHistory = [
-    { time: "Hace 6h", value: 3 },
-    { time: "Hace 5h", value: 7 },
-    { time: "Hace 4h", value: 12 },
-    { time: "Hace 3h", value: 8 },
-    { time: "Hace 2h", value: 15 },
-    { time: "Hace 1h", value: 18 },
-    { time: "Ahora", value: 21 },
-  ];
 
   const movementStats = [
-    { label: "Detecciones", value: "127", time: "Hoy" },
+    { label: "Detecciones", value: activaciones},
     { label: "Zona activa", value: "Sala", time: "Principal" },
     { label: "Última actividad", value: latestRecord?.fecha }
   ];
@@ -44,32 +36,45 @@ const PerformancePage = () => {
     console.log("Sensor de Movimiento:", state ? "ENCENDIDO" : "APAGADO");
   };
 
-  const handleFilterChange = (filters) => {
-    console.log("Filtros de movimiento aplicados:", filters);
-    // Aquí puedes implementar la lógica para filtrar los datos
+  const handleFilterChange = (filters, dataToFilter = rawData) => {
+    const { filteredData, formattedData, latestRecord } = filterData(filters, dataToFilter, "movimiento");
+    setMovementData(formattedData);
+    if (latestRecord) {
+      setLatestRecord(latestRecord);
+    }
   };
 
   useEffect(() => {
     const loadData = async () => {
       try {
         const rawData = await getData();
+  
+        // Ordenar por fecha ascendente
         const sortedData = rawData.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+        setRawData(sortedData);
+  
         if (sortedData.length > 0) {
           setLatestRecord(sortedData[sortedData.length - 1]);
-        } 
+        }
+        // Contar cuántas veces se activó el sensor
+        const activaciones = sortedData.filter(record => record.movimiento === true).length;
+        setActivaciones(activaciones);
+  
+        // Formatear los datos para la gráfica
         const formattedData = sortedData.map((record) => {
-          const displayDateTIme = new Date(record.fecha).toLocaleDateString('es-ES', {
-            day: '2-digit',
-            month: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
+          const displayDateTime = new Date(record.fecha).toLocaleString("es-ES", {
+            day: "2-digit",
+            month: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
           });
-
+  
           return {
-            time: displayDateTIme,
-            value: Number(record.movimiento),
+            time: displayDateTime,
+            value: Number(record.movimiento), // true => 1, false => 0
           };
         });
+  
         setMovementData(formattedData);
         setError(null);
       } catch (err) {
@@ -77,10 +82,11 @@ const PerformancePage = () => {
       } finally {
         setLoading(false);
       }
-    }
+    };
+  
     loadData();
-  }, [])
-
+  }, []);
+  
   return (
     <div className="sensor-page">
       <div className="performance-header">
@@ -124,7 +130,7 @@ const PerformancePage = () => {
           {movementData && (
           <LineChart
             data={movementData}
-            title="Detecciones de Movimiento (Últimas 6 horas)"
+            title="Grafica de Movimiento"
             color="#f59e0b"
             height={400}
           />
