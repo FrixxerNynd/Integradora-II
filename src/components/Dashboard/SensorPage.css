@@ -786,6 +786,7 @@
 .performance-chart-section {
   display: flex;
   flex-direction: column;
+  size: 1.5rem;
 }
 
 .performance-alerts-section {

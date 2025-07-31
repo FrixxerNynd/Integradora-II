@@ -96,3 +96,50 @@ h5 {
 h6 {
   font-size: 1rem;
 }
+
+/* Estilos para móviles pequeños (hasta 480px) */
+@media (max-width: 480px) {
+  :root {
+    font-size: 14px; /* Reduce tamaño base */
+  }
+
+  h1 { font-size: 1.75rem; }
+  h2 { font-size: 1.5rem; }
+  h3 { font-size: 1.25rem; }
+  h4 { font-size: 1.125rem; }
+  h5 { font-size: 1rem; }
+  h6 { font-size: 0.875rem; }
+
+  body {
+    padding: 0 0.5rem;
+  }
+}
+
+/* Estilos para móviles grandes y tablets pequeñas (481px - 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  :root {
+    font-size: 15px;
+  }
+
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.75rem; }
+  h3 { font-size: 1.5rem; }
+  h4 { font-size: 1.25rem; }
+  h5 { font-size: 1.125rem; }
+  h6 { font-size: 1rem; }
+
+  body {
+    padding: 0 1rem;
+  }
+}
+
+/* Estilos para tablets (769px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  :root {
+    font-size: 16px;
+  }
+
+  body {
+    padding: 0 2rem;
+  }
+}

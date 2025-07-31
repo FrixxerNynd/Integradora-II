@@ -1,0 +1,93 @@
+/* User Card Styles - Light Mode (default) */
+.custom-user-card {
+  border: 1px solid #e8e8e8;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.custom-user-card .ant-card-head {
+  background: #fafafa;
+  border-bottom: 1px solid #f0f0f0;
+  min-height: 48px;
+  padding: 0 16px;
+}
+
+.custom-user-card .ant-card-head-title {
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.85);
+  padding: 12px 0;
+}
+
+.custom-user-card .ant-card-body {
+  padding: 16px;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.custom-user-card p {
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.custom-user-card p:last-child {
+  margin-bottom: 0;
+}
+
+.custom-user-card p strong {
+  color: rgba(0, 0, 0, 0.85);
+  margin-right: 8px;
+}
+
+/* Hover effect */
+.custom-user-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  border-color: #40a9ff;
+}
+
+/* Dark Mode Styles */
+.dark .custom-user-card {
+  background: #252836;
+  border: 1px solid #323248;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.dark .custom-user-card .ant-card-head {
+  background: #2b2b40;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.dark .custom-user-card .ant-card-head-title {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.dark .custom-user-card .ant-card-body {
+  color: rgba(255, 255, 255, 0.65);
+  background: #252836;
+}
+
+.dark .custom-user-card p strong {
+  color: rgba(255, 255, 255, 0.85);
+}
+.dark .custom-user-card:hover{
+  border-color: #40a9ff;
+}
+
+/* Button styles */
+.custom-user-card .ant-btn {
+  transition: all 0.2s ease;
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .custom-user-card {
+    margin-bottom: 16px;
+  }
+  
+  .custom-user-card .ant-card-body {
+    padding: 12px;
+  }
+}

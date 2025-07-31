@@ -9,10 +9,12 @@ import {
   CheckCircle,
 } from "lucide-react";
 import "./TopBar.css";
+import {useAuth} from "../Auth/AuthContext";
 
-const TopBar = ({ isDarkMode, toggleDarkMode, onSettingsClick }) => {
+const TopBar = ({ isDarkMode, toggleDarkMode }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const notificationRef = useRef(null);
+  const { user } = useAuth();
 
   // Datos de notificaciones mock
   const notifications = [
@@ -85,66 +87,12 @@ const TopBar = ({ isDarkMode, toggleDarkMode, onSettingsClick }) => {
           >
             {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
           </button>
-
-          <button
-            className="action-btn notification-btn"
-            onClick={toggleNotifications}
-            title="Ver notificaciones"
-          >
-            <Bell size={20} />
-            <span className="notification-badge">{notifications.length}</span>
-          </button>
-
-          {showNotifications && (
-            <div className="notifications-panel" ref={notificationRef}>
-              <div className="notifications-header">
-                <h3>Notificaciones</h3>
-                <span className="notifications-count">
-                  {notifications.length} nuevas
-                </span>
-              </div>
-              <div className="notifications-list">
-                {notifications.map((notification) => {
-                  const Icon = notification.icon;
-                  return (
-                    <div key={notification.id} className="notification-item">
-                      <div
-                        className="notification-icon"
-                        style={{ color: notification.color }}
-                      >
-                        <Icon size={18} />
-                      </div>
-                      <div className="notification-content">
-                        <div className="notification-title">
-                          {notification.title}
-                        </div>
-                        <div className="notification-message">
-                          {notification.message}
-                        </div>
-                        <div className="notification-time">
-                          {notification.time}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          <button
-            className="action-btn"
-            onClick={onSettingsClick}
-            title="Configuración"
-          >
-            <Settings size={20} />
-          </button>
         </div>
 
         <div className="user-menu">
           <div className="user-info-header">
             <div className="user-info-content">
-              <span className="user-name">Alejandro Villarreal</span>
+              <span className="user-name">{user.name}</span>
             </div>
           </div>
           <div className="user-avatar">

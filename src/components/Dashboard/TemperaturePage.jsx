@@ -27,16 +27,6 @@ const TemperaturePage = () => {
    * 
    */
 
-  const temperatureHistory = [
-    { time: "Hace 6h", value: 22 },
-    { time: "Hace 5h", value: 23 },
-    { time: "Hace 4h", value: 24 },
-    { time: "Hace 3h", value: 26 },
-    { time: "Hace 2h", value: 25 },
-    { time: "Hace 1h", value: 24 },
-    { time: "Ahora", value: 25 },
-  ];
-
   const temperatureStats = [
     { label: "Mínima", value: minTemp+"°C", time: "24 horas" },
     { label: "Máxima", value: maxTemp+"°C", time: "24 horas" },
@@ -76,11 +66,9 @@ const TemperaturePage = () => {
           setLatestRecord(sortedData[sortedData.length - 1]);
         }
   
-        // Tomar los últimos 24 registros (o los que haya disponibles)
         const lastN = latestRecord;
         const recentData = sortedData.slice(-lastN);
   
-        // Calcular min, max y variación
         const temperatures = recentData.map((r) => r.temperatura);
         const min = Math.min(...temperatures);
         const max = Math.max(...temperatures);
@@ -162,24 +150,6 @@ const TemperaturePage = () => {
             height={400}
           />
         )}
-        </div>
-      </div>
-
-      <div className="temperature-alerts-section">
-        <div className="sensor-alerts">
-          <h3>Alertas de Temperatura</h3>
-          <div className="alert-settings">
-            <div className="alert-item">
-              <label>Temperatura Máxima Permitida</label>
-              <input type="number" defaultValue="30" />
-              <span>°C</span>
-            </div>
-            <div className="alert-item">
-              <label>Temperatura Mínima Permitida</label>
-              <input type="number" defaultValue="15" />
-              <span>°C</span>
-            </div>
-          </div>
         </div>
       </div>
     </div>

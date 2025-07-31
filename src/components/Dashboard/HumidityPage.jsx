@@ -11,6 +11,9 @@ const HumidityPage = () => {
   const [latestRecord, setLatestRecord] = useState(null);
   const [error, setError] = useState(null);
   const [rawData, setRawData] = useState([]);
+  const [minHumidity, setMinHumidity] = useState(null);
+  const [maxHumidity, setMaxHumidity] = useState(null);
+  const [humidityVariation, setHumidityVariation] = useState(null);
   /**
    const humidityData = {
      id: 2,
@@ -24,21 +27,10 @@ const HumidityPage = () => {
    * 
    */
 
-  const humidityHistory = [
-    { time: "Hace 6h", value: 68 },
-    { time: "Hace 5h", value: 70 },
-    { time: "Hace 4h", value: 65 },
-    { time: "Hace 3h", value: 62 },
-    { time: "Hace 2h", value: 64 },
-    { time: "Hace 1h", value: 66 },
-    { time: "Ahora", value: 65 },
-  ];
-
   const humidityStats = [
-    { label: "Mínima", value: "45%", time: "3:00 PM" },
-    { label: "Máxima", value: "78%", time: "6:00 AM" },
-    { label: "Promedio", value: "62%", time: "24 horas" },
-    { label: "Variación", value: "±5%", time: "Semana" },
+    { label: "Mínima", value: minHumidity+"%" },
+    { label: "Máxima", value: maxHumidity+"%" },
+    { label: "Variación", value: humidityVariation+"%" },
   ];
 
   const handleSensorToggle = (state) => {
@@ -78,6 +70,19 @@ const HumidityPage = () => {
 
         setHumidityData(formattedData);
         setError(null);
+
+        const lastN = latestRecord;
+        const recentData = sortedData.slice(-lastN);
+  
+        const humidyties = recentData.map((r) => r.humedad);
+        const min = Math.min(...humidyties);
+        const max = Math.max(...humidyties);
+        const variation = max - min;
+  
+        setMinHumidity(min);
+        setMaxHumidity(max);
+        setHumidityVariation(variation);
+
       } catch (err) {
         setError(err.message);
       } finally {
@@ -134,24 +139,6 @@ const HumidityPage = () => {
             height={400}
           />
         )}
-        </div>
-      </div>
-
-      <div className="humidity-alerts-section">
-        <div className="sensor-alerts">
-          <h3>Alertas de Humedad</h3>
-          <div className="alert-settings">
-            <div className="alert-item">
-              <label>Humedad Máxima Permitida</label>
-              <input type="number" defaultValue="80" />
-              <span>%</span>
-            </div>
-            <div className="alert-item">
-              <label>Humedad Mínima Permitida</label>
-              <input type="number" defaultValue="30" />
-              <span>%</span>
-            </div>
-          </div>
         </div>
       </div>
     </div>

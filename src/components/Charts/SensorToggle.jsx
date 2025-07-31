@@ -42,25 +42,6 @@ const SensorToggle = ({
           <div className="sensor-filter-section">
             <DateFilter onFilterChange={handleFilterChange} />
           </div>
-
-          <div className="sensor-power-section">
-            <div
-              className={`power-button ${isOn ? "on" : "off"}`}
-              onClick={handleToggle}
-            >
-              <div className="power-icon">
-                <svg width="35" height="35" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M8 2v6m8-6v6m-4-4v10m0 0a6 6 0 0 1-6-6V8a6 6 0 0 1 12 0v4a6 6 0 0 1-6 6z"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>

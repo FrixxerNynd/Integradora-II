@@ -3,6 +3,7 @@ import { User, Lock, Eye, EyeOff } from "lucide-react";
 import { loginApi } from "../../Service/AuthService";
 import { useAuth } from "./AuthContext";
 import "./Login.css";
+import logo from "../../assets/logo.webp";
 
 const Login = ({ onLogin }) => {
   const [credentials, setCredentials] = useState({
@@ -56,7 +57,9 @@ const Login = ({ onLogin }) => {
       <div className="login-card">
         <div className="login-header">
           <div className="logo-section">
-            <div className="logo-icon">🚀</div>
+            <div className="logo-icon">
+              <img src={logo} alt="Logo" className="logo-img"/>
+            </div>
             <h1>NeoDev</h1>
           </div>
           <p>Accede a tu panel de control</p>
@@ -115,7 +118,7 @@ const Login = ({ onLogin }) => {
 
         <div className="login-footer">
           <div className="demo-credentials">
-            <small>Demo: admin / admin</small>
+            <small>NeoDev Solutions</small>
           </div>
         </div>
       </div>

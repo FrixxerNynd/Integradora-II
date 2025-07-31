@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import SensorToggle from "../Charts/SensorToggle";
-import LineChart from "../Charts/LineChart";
+// import LineChart from "../Charts/LineChart"; // ya no lo usaremos aquí
+import CustomPieChart from "../Charts/PieChart";
 import "./SensorPage.css";
 import { getData, filterData } from "../../Service/DashboardService";
 
@@ -11,33 +12,23 @@ const PerformancePage = () => {
   const [latestRecord, setLatestRecord] = useState(null);
   const [rawData, setRawData] = useState([]);
   const [activaciones, setActivaciones] = useState(null);
-
-  /**
-   const movementData = {
-     id: 3,
-     title: "Movimiento",
-     value: "Active",
-     icon: "movement",
-     trend: "+12 eventos",
-     isPositive: true,
-     color: "orange",
-   };
-   * 
-   */
-
+  const [noActivaciones, setNoActivaciones] = useState(null); // nuevo
+  const [pieData, setPieData] = useState([]); // nuevo
 
   const movementStats = [
-    { label: "Detecciones", value: activaciones},
+    { label: "Detecciones", value: activaciones },
     { label: "Zona activa", value: "Sala", time: "Principal" },
-    { label: "Última actividad", value: latestRecord?.fecha }
+    { label: "Última actividad", value: latestRecord?.fecha ? new Date(latestRecord.fecha).toLocaleDateString("es-MX", 
+      { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : "Sin actividad"},
   ];
 
-  const handleSensorToggle = (state) => {
-    console.log("Sensor de Movimiento:", state ? "ENCENDIDO" : "APAGADO");
-  };
 
   const handleFilterChange = (filters, dataToFilter = rawData) => {
-    const { filteredData, formattedData, latestRecord } = filterData(filters, dataToFilter, "movimiento");
+    const { filteredData, formattedData, latestRecord } = filterData(
+      filters,
+      dataToFilter,
+      "movimiento"
+    );
     setMovementData(formattedData);
     if (latestRecord) {
       setLatestRecord(latestRecord);
@@ -48,19 +39,36 @@ const PerformancePage = () => {
     const loadData = async () => {
       try {
         const rawData = await getData();
-  
-        // Ordenar por fecha ascendente
-        const sortedData = rawData.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+        const sortedData = rawData.sort(
+          (a, b) => new Date(a.fecha) - new Date(b.fecha)
+        );
         setRawData(sortedData);
-  
+
         if (sortedData.length > 0) {
           setLatestRecord(sortedData[sortedData.length - 1]);
         }
-        // Contar cuántas veces se activó el sensor
-        const activaciones = sortedData.filter(record => record.movimiento === true).length;
-        setActivaciones(activaciones);
-  
-        // Formatear los datos para la gráfica
+
+        const activados = sortedData.filter((r) => r.movimiento === true).length;
+        const noDetectados = sortedData.filter((r) => r.movimiento === false).length;
+
+        setActivaciones(activados);
+        setNoActivaciones(noDetectados);
+
+        // Construir data para PieChart
+        setPieData([
+          {
+            name: "Movimiento Detectado",
+            value: activados,
+            color: "#f59e0b", // naranja
+          },
+          {
+            name: "Sin Movimiento",
+            value: noDetectados,
+            color: "#cbd5e1", // gris claro
+          },
+        ]);
+
+        // También se conserva el formateo de datos por si se usa en otros lugares
         const formattedData = sortedData.map((record) => {
           const displayDateTime = new Date(record.fecha).toLocaleString("es-ES", {
             day: "2-digit",
@@ -68,13 +76,13 @@ const PerformancePage = () => {
             hour: "2-digit",
             minute: "2-digit",
           });
-  
+
           return {
             time: displayDateTime,
             value: Number(record.movimiento), // true => 1, false => 0
           };
         });
-  
+
         setMovementData(formattedData);
         setError(null);
       } catch (err) {
@@ -83,10 +91,10 @@ const PerformancePage = () => {
         setLoading(false);
       }
     };
-  
+
     loadData();
   }, []);
-  
+
   return (
     <div className="sensor-page">
       <div className="performance-header">
@@ -94,18 +102,16 @@ const PerformancePage = () => {
           <h1>Monitoreo de Movimiento</h1>
         </div>
 
-        {/* Toggle Section */}
         <div className="performance-current-reading">
           <SensorToggle
             title="Control del Sensor de Movimiento"
             initialState={true}
-            onToggle={handleSensorToggle}
+            onToggle={() => {}}
             onFilterChange={handleFilterChange}
           />
         </div>
       </div>
 
-        {/* Stats Section */}
       <div className="performance-main-grid">
         <div className="performance-stats-section">
           <div className="sensor-stats">
@@ -122,38 +128,17 @@ const PerformancePage = () => {
           </div>
         </div>
 
-
-        {/* Chart Section */}
+        {/* Pie Chart Section */}
         <div className="performance-chart-section">
-        {loading && <div>Cargando datos... </div>}
-        {error && <div className="error-message">Error: {error} </div>}
-          {movementData && (
-          <LineChart
-            data={movementData}
-            title="Grafica de Movimiento"
-            color="#f59e0b"
-            height={400}
-          />
+          {loading && <div>Cargando datos...</div>}
+          {error && <div className="error-message">Error: {error}</div>}
+          {!loading && !error && pieData && pieData.length > 0 && (
+            <CustomPieChart
+              data={pieData}
+              title="Distribución de Movimiento"
+              height={400}
+            />
           )}
-        </div>
-      </div>
-
-      {/* Configuration Section */}
-      <div className="performance-alerts-section">
-        <div className="sensor-alerts">
-          <h3>Configuración de Detección</h3>
-          <div className="alert-settings">
-            <div className="alert-item">
-              <label>Sensibilidad del Sensor</label>
-              <input type="range" min="1" max="10" defaultValue="5" />
-              <span>Media</span>
-            </div>
-            <div className="alert-item">
-              <label>Tiempo de Activación</label>
-              <input type="number" defaultValue="3" />
-              <span>segundos</span>
-            </div>
-          </div>
         </div>
       </div>
     </div>

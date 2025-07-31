@@ -94,6 +94,15 @@
 
 .logo-icon:hover {
   transform: scale(1.05);
+  box-shadow: 0 8px 32px rgba(48, 175, 235, 0.897);
+}
+.logo-img{
+  width: 30px;
+  height: 40px;
+  min-width: 40px;
+  transition: all 0.2s ease;
+  align-items: center;
+  display: flex;
 }
 
 .login-header h1 {

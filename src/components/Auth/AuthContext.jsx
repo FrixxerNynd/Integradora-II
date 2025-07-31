@@ -1,26 +1,29 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 
-// Se inicializa el contexto sin tipos, usualmente con null.
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-    // Se elimina la información de tipo de los useState.
     const [user, setUser] = useState(null);
     const [email, setEmail] = useState(null);
     const [token, setToken] = useState(null);
+    const [rol, setRol] = useState(null);
 
-    // La lógica de useEffect no cambia en absoluto.
     useEffect(() => {
         let storedUser = localStorage.getItem('User');
+        let storedEmail = localStorage.getItem('Email');
         let storedToken = localStorage.getItem('Token');
+        let storedRol = localStorage.getItem('Rol');
     
         if (!storedToken) {
             storedUser = sessionStorage.getItem('User');
+            storedEmail = sessionStorage.getItem('Email');
             storedToken = sessionStorage.getItem('Token');
+            storedRol = sessionStorage.getItem('Rol');
         }
     
         if (storedToken) {
             setToken(storedToken);
+            setRol(storedRol);
         }
     
         if (storedUser) {
@@ -30,21 +33,28 @@ export function AuthProvider({ children }) {
             } catch (error) {
                 console.error('Error al parsear el usuario guardado:', error);
                 localStorage.removeItem('User');
+                localStorage.removeItem('Email');
                 localStorage.removeItem('Token');
+                localStorage.removeItem('Rol');
                 sessionStorage.removeItem('User');
+                sessionStorage.removeItem('Email');
                 sessionStorage.removeItem('Token');
+                sessionStorage.removeItem('Rol');
             }
         }
     }, []);
 
-    // Se eliminan los tipos de los parámetros de la función.
     const login = (user, email, newToken, remember) => {
         if (remember) {
             localStorage.setItem('User', JSON.stringify(user));
+            localStorage.setItem('Email', email);
             localStorage.setItem('Token', newToken);
+            localStorage.setItem('Rol', user.rol);
         } else {
             sessionStorage.setItem('User', JSON.stringify(user));
+            sessionStorage.setItem('Email', email);
             sessionStorage.setItem('Token', newToken);
+            sessionStorage.setItem('Rol', user.rol);
         }
         setUser(user);
         setEmail(email);
@@ -53,9 +63,13 @@ export function AuthProvider({ children }) {
 
     const logout = () => {
         localStorage.removeItem('User');
+        localStorage.removeItem('Email');
         localStorage.removeItem('Token');
+        localStorage.removeItem('Rol');
         sessionStorage.removeItem('User');
+        sessionStorage.removeItem('Email');
         sessionStorage.removeItem('Token');
+        sessionStorage.removeItem('Rol');
         setUser(null);
         setEmail(null);
         setToken(null);
@@ -64,13 +78,12 @@ export function AuthProvider({ children }) {
     const isAuthenticated = !!token;
 
     return (
-        <AuthContext.Provider value={{ user, email, token, login, logout, isAuthenticated }}>
+        <AuthContext.Provider value={{ user, email, token, rol, login, logout, isAuthenticated }}>
             {children}
         </AuthContext.Provider>
     );
 }
 
-// El custom hook 'useAuth' sigue funcionando de la misma manera.
 export function useAuth() {
     const context = useContext(AuthContext);
     if (!context) {

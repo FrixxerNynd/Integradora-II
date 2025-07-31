@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
-import LineChart from "../Charts/LineChart"; // Correcto: Solo importa el componente contenedor.
+import LineChart from "../Charts/LineChart"; 
+import PieChart from "../Charts/PieChart";
+import CircularProgress from "../Charts/CircularProgress";
 import ActivityFeed from "./ActivityFeed";
 import AIChat from "./AIChat";
 import { activityData } from "../../Service/mockData"; // Correcto: Solo importa los datos que sí usas.
