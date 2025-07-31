@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { config } from 'dotenv';
+import { SECRET_KEY } from '../../config/config.js';
 
 config();
 
@@ -12,7 +13,7 @@ export const verifyToken = async (req, res, next) => {
       return res.status(401).json({ message: 'Token no proporcionado' });
     }
 
-    const decoded = jwt.verify(token, process.env.SECRET_KEY);
+    const decoded = jwt.verify(token, SECRET_KEY);
     req.user = decoded;
     console.log('Payload',decoded)
     next();

@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
-
+import {MONGO_DB} from "./config.js";
 const connectDB = async () => {
   try {
-    const uri ='mongodb+srv://julifer2435:Fercho23dic04@clusterintegradora.p1kmcdn.mongodb.net/?retryWrites=true&w=majority&appName=ClusterIntegradora';
+    const uri = MONGO_DB;
 
     await mongoose.connect(uri);
 

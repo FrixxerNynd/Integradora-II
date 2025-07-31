@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken';
-
-export const SECRET_KEY = 'FerchSecret';
+import {SECRET_KEY} from '../../config/config.js'
 
 export const verifyToken = (req, res, next) => {
   const token = req.headers.authorization?.split(' ')[1];

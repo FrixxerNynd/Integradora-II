@@ -1,14 +1,14 @@
 import mongoose from "mongoose";
-
+import {MONGO_URL} from "./config.js";
 const connectDB = async () => {
   try {
-    const uri ='mongodb+srv://julifer2435:Fercho23dic04@clusterintegradora.p1kmcdn.mongodb.net/?retryWrites=true&w=majority&appName=ClusterIntegradora';
+    const uri = MONGO_URL;
 
     await mongoose.connect(uri);
 
-    console.log('✅ Conexión exitosa a MongoDB con Mongoose');
+    console.log('Conexión exitosa a MongoDB');
   } catch (error) {
-    console.error('❌ Error al conectar a MongoDB:', error.message);
+    console.error('Error al conectar a MongoDB:', error.message);
     process.exit(1); 
   }
 };

@@ -7,10 +7,11 @@ async function bootstrap() {
   app.enableCors({
     origin: true,
     methods: 'GET,HEAD,POST,PUT,PATCH,POST,DELETE,OPTIONS',
-    allowedHeaders: 'Content-Type, Accept',
+    allowedHeaders: 'Content-Type, Accept, Authorization',
     credentials: true,
   });
-  await app.listen(process.env.PORT ?? 3000);
-  console.log(`Gateway is running on: http://localhost:${process.env.PORT ?? 3000}`);
+  const port = process.env.PORT || 3000;
+await app.listen(port);
+  console.log(`Gateway is running on port: ${port}`);
 }
 bootstrap();

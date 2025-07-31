@@ -5,7 +5,6 @@ const PORT = 3003;
 
 connectDB().then(() => {
   app.listen(PORT, () => {
-    console.log(`Servicio en el puerto ${PORT}`);
-    console.log(`La ruta es: http://localhost:${PORT}`);
+    console.log(`Servicio Inicialidado correctamente puerto: ${PORT}`)
   });
 });

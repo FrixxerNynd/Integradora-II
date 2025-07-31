@@ -1,7 +1,7 @@
 import User from '../model/User.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-import { SECRET_KEY } from '../auth/auth.js';
+import {SECRET_KEY} from '../../config/config.js';
 
 export const login = async (req, res) => {
   try {
@@ -18,7 +18,7 @@ export const login = async (req, res) => {
     const token = jwt.sign(
       { id: user._id, rol: user.rol },
       SECRET_KEY,
-      { expiresIn: '40m' }
+      { expiresIn: '4h' }
     );
 
     res.status(200).json({ token, user });
