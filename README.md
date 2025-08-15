@@ -1,7 +1,7 @@
 
-# 🌐 Web Frontend for the Management System
+# Web Frontend for the Management System
 
-## 📌 Overview
+## Overview
 This project is a **React.js web application** designed to interact with a backend API to manage users, monitor data, and handle role-based functionalities.  
 It implements a responsive interface for desktop and mobile, and a modular component architecture for scalability.
 
@@ -9,7 +9,7 @@ The application’s primary goal is to provide an intuitive and efficient platfo
 
 ---
 
-## 🛠 Technologies Used
+## Technologies Used
 
 ### **Frontend**
 - [React.js](https://es.react.dev/) – Main framework for building the web application.
@@ -21,7 +21,7 @@ The application’s primary goal is to provide an intuitive and efficient platfo
 
 ---
 
-## 📱 Features
+## Features
 - **Login & Logout** with JWT authentication.
 - **Role-based access control** (admin, user, etc.).
 - **Responsive UI** for desktop, tablet, and mobile devices.
@@ -30,21 +30,21 @@ The application’s primary goal is to provide an intuitive and efficient platfo
 
 ---
 
-## ⚙️ Installation & Setup
+## Installation & Setup
 
-### **1️⃣ Clone the repository**
+### **Clone the repository**
 ```
 git clone --branch frontend --single-branch https://github.com/FrixxerNynd/Integradora-II.git
 cd frontend-web-system
 ````
 
-### **2️⃣ Install dependencies**
+### **Install dependencies**
 
 ```bash
 npm install
 ```
 
-### **3️⃣ Set up environment variables**
+### **Set up environment variables**
 
 Create a `.env` file in the project root with the following configuration:
 
@@ -61,16 +61,16 @@ VITE_USER_CHANGE=https://your-api-ur.com
 
 ---
 
-## ▶️ Running the Project
+## Running the Project
 
 ### **Development**
 
-```bash
+```
 npm run dev
 ```
 
 The app will be available at:
-👉 **[http://localhost:5173](http://localhost:5173)** (or the port configured by Vite).
+**[http://localhost:5173](http://localhost:5173)** (or the port configured by Vite).
 
 ### **Production Build**
 If you are using railway service, you have to ensure that in package.json file exist the comand 
@@ -88,7 +88,7 @@ npm run preview
 
 ---
 
-## 📡 API Communication
+## API Communication
 
 The frontend communicates with the backend using Axios. All requests are sent with an **Authorization** header containing the JWT access token.
 
@@ -104,7 +104,7 @@ axios.get(`${import.meta.env.VITE_API_URL}/users`, {
 
 ---
 
-## 🖼 Project Structure
+## Project Structure
 
 ```
 src/
@@ -121,10 +121,8 @@ src/
 
 ---
 
-## 👨‍💻 Author
+## Author
 
 **\[NeoDev Software Development Team]**
 📧 Email: \[[[neodev.solutions.utd@gmail.com](mailto:[neodev.solutions.utd@gmail.com)]
 
-¿Quieres que lo prepare con esas mejoras?
-```
